@@ -1,13 +1,10 @@
 <template>
-<!--remove <v-toolbar-side> -->
-  <v-card class="wgu-helpwin">
-    <v-toolbar :color="color" dark>
-      <v-icon>{{ icon }}</v-icon>
-      <v-toolbar-title v-if="windowTitle">{{ windowTitle }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-icon @click="onWinXClose">close</v-icon>
-    </v-toolbar>
-
+  <wgu-module-card v-bind="$attrs"
+      :moduleName="moduleName"
+      class="wgu-helpwin" 
+      :icon="icon"
+      :title="title"
+      :width="width">
     <v-card-title primary-title>
       <div>
         <h3 class="headline mb-0" v-if="textTitle">{{ textTitle }}</h3>
@@ -24,34 +21,42 @@
         {{ infoLinkText || infoLinkUrl }}
         </a>
     </v-card-actions>
-  </v-card>
-
+  </wgu-module-card>
 </template>
 
 <script>
+  import ModuleCard from './../modulecore/ModuleCard';
+
   export default {
+    name: 'wgu-helpwin-win',
+    inheritAttrs: false,
+    components: {
+      'wgu-module-card': ModuleCard
+    },
     props: {
-      color: {type: String, required: false, default: 'red darken-3'},
-      icon: {type: String, required: false, default: 'help'}
+      icon: {type: String, required: false, default: 'help'},
+      title: {type: String, required: false, default: 'About'},
+      textTitle: {type: String, required: false, default: 'About Wegue'},
+      htmlContent: {type: String, required: false, default: '<h3>WebGIS with OpenLayers and Vue.js</h3>'},
+      infoLinkUrl: {type: String, required: false, default: 'https://github.com/meggsimum/wegue'},
+      infoLinkText: {type: String, required: false, default: 'More info'},
+      width: {type: Number, required: false, default: 300}
     },
     data () {
-      let config = this.$appConfig.modules['wgu-helpwin'] || {};
       return {
-        show: false,
-        windowTitle: config.windowTitle || 'About',
-        textTitle: config.textTitle || 'About Wegue',
-        htmlContent: config.htmlContent || '<h3>WebGIS with OpenLayers and Vue.js</h3>',
-        infoLinkUrl: config.infoLinkUrl || 'https://github.com/meggsimum/wegue',
-        infoLinkText: config.infoLinkText || 'More info'
-      }
-    },
-    methods: {
-      onWinXClose: function () {
-        this.$emit('winxclose');
+        moduleName: 'wgu-helpwin'
       }
     }
   }
 </script>
 
-<style>
+<style scoped>
+  /* TODO 
+    Generalize the positioning concept for windows,
+    this interferes with positioning and draggable settings in the app.conf */
+  .wgu-helpwin.wgu-floating {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%);
+  }
 </style>
